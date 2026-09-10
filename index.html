@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Conversor de Temperatura</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="card">
+    <h1>Conversor de Temperatura</h1>
+
+    <label for="valor">Valor</label>
+    <input type="number" id="valor" placeholder="Ex: 25" />
+
+    <label for="direcao">Converter</label>
+    <select id="direcao">
+      <option value="c-para-f">Celsius → Fahrenheit</option>
+      <option value="f-para-c">Fahrenheit → Celsius</option>
+    </select>
+
+    <button onclick="converter()">Converter</button>
+
+    <p id="resultado"></p>
+  </main>
+
+  <script src="converter.js"></script>
+  <script>
+    function converter() {
+      const valor = Number(document.getElementById('valor').value);
+      const direcao = document.getElementById('direcao').value;
+      const resultado = document.getElementById('resultado');
+
+      try {
+        if (direcao === 'c-para-f') {
+          resultado.textContent = `${valor}°C = ${celsiusParaFahrenheit(valor)}°F`;
+        } else {
+          resultado.textContent = `${valor}°F = ${fahrenheitParaCelsius(valor)}°C`;
+        }
+      } catch (erro) {
+        resultado.textContent = erro.message;
+      }
+    }
+  </script>
+</body>
+</html>
