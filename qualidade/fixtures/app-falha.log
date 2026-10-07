@@ -1,0 +1,5 @@
+2026-10-06 11:00:01 INFO  Aplicação iniciada
+2026-10-06 11:00:03 ERROR Falha ao converter valor: entrada inválida "abc"
+2026-10-06 11:00:04 ERROR Timeout ao acessar serviço de métricas
+2026-10-06 11:00:05 CRITICAL Serviço de conversão não respondeu em 10s
+2026-10-06 11:00:06 ERROR Falha ao converter valor: NaN

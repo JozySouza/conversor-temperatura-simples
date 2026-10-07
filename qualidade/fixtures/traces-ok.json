@@ -1,0 +1,8 @@
+{
+  "trace_id": "trace-ok-001",
+  "spans": [
+    { "servico": "frontend", "duracao_ms": 40 },
+    { "servico": "api-converter", "duracao_ms": 90 },
+    { "servico": "banco-de-dados", "duracao_ms": 60 }
+  ]
+}
