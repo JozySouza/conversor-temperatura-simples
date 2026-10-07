@@ -12,7 +12,7 @@ jobs:
       - name: Instalar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '20'
 
       - name: Instalar dependências
         run: npm install
@@ -22,3 +22,6 @@ jobs:
 
       - name: Rodar os testes com cobertura
         run: npm test
+
+      - name: Quality Gate (testes/cobertura, métricas, logs, traces)
+        run: node qualidade/pipeline-qualidade.js ok

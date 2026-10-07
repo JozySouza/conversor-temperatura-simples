@@ -1,0 +1,5 @@
+2026-10-06 10:00:01 INFO  Aplicação iniciada
+2026-10-06 10:00:03 INFO  GET /converter 200 OK (120ms)
+2026-10-06 10:00:05 INFO  GET /converter 200 OK (98ms)
+2026-10-06 10:00:08 WARN  Cache expirado, recalculando
+2026-10-06 10:00:09 INFO  GET /converter 200 OK (101ms)
