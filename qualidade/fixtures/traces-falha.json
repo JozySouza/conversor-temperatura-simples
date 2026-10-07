@@ -1,0 +1,8 @@
+{
+  "trace_id": "trace-falha-007",
+  "spans": [
+    { "servico": "frontend", "duracao_ms": 50 },
+    { "servico": "api-converter", "duracao_ms": 120 },
+    { "servico": "banco-de-dados", "duracao_ms": 900 }
+  ]
+}
