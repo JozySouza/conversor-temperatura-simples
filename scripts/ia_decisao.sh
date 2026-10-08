@@ -43,10 +43,23 @@ ${DADOS}
   '{model: $modelo, temperature: 0, max_tokens: 200,
     messages: [{role: "system", content: $sistema}, {role: "user", content: $dados}]}')
 
-RESPOSTA=$(curl -s --max-time 30 "$API_URL" \
+BRUTO=$(curl -s --max-time 30 "$API_URL" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ${GROQCLOUD_API_KEY:-}" \
-  -d "$CORPO" | jq -r '.choices[0].message.content // empty' 2>/dev/null || true)
+  -d "$CORPO" || true)
+RESPOSTA=$(printf '%s' "$BRUTO" | jq -r '.choices[0].message.content // empty' 2>/dev/null || true)
+
+# Diagnóstico: se a IA não respondeu, guarda o motivo (nunca mostra a chave)
+CAUSA=""
+if [ -z "${GROQCLOUD_API_KEY:-}" ]; then
+  CAUSA="secret GROQCLOUD_API_KEY vazio neste step"
+elif [ -z "$BRUTO" ]; then
+  CAUSA="sem resposta da API (timeout ou rede)"
+elif [ -z "$RESPOSTA" ]; then
+  CAUSA=$(printf '%s' "$BRUTO" | jq -r '.error.message // empty' 2>/dev/null || true)
+  CAUSA=${CAUSA:-$(printf '%s' "$BRUTO" | head -c 200)}
+fi
+[ -n "$CAUSA" ] && echo "Erro da API: $CAUSA"
 
 echo "Resposta bruta da IA:"
 echo "${RESPOSTA:-<vazia>}"
@@ -61,7 +74,7 @@ if [ -n "$DECISAO" ] && echo " $OPCOES " | grep -q " $DECISAO "; then
 else
   # 5) Fail-safe: sem chave, API fora, resposta estranha -> opção segura
   DECISAO="$OPCAO_SEGURA"
-  JUSTIFICATIVA="IA indisponível ou resposta fora do formato; aplicada a opção segura."
+  JUSTIFICATIVA="IA indisponível ou resposta fora do formato; aplicada a opção segura.${CAUSA:+ Causa: $CAUSA}"
 fi
 JUSTIFICATIVA=$(printf '%s' "$JUSTIFICATIVA" | tr '\n|' ' /')
 
