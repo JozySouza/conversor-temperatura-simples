@@ -1,0 +1,17 @@
+name: Diagnostico Groq
+
+on:
+  workflow_dispatch:
+
+jobs:
+  diagnostico:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Listar os modelos disponíveis na sua conta Groq
+        env:
+          GROQCLOUD_API_KEY: ${{ secrets.GROQCLOUD_API_KEY }}
+        run: |
+          [ -n "$GROQCLOUD_API_KEY" ] && echo "Secret encontrado" || echo "Secret VAZIO"
+          echo "----- Modelos disponíveis -----"
+          curl -s https://api.groq.com/openai/v1/models \
+            -H "Authorization: Bearer $GROQCLOUD_API_KEY" | jq -r '.data[].id // .' | sort

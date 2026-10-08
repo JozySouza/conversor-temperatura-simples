@@ -132,7 +132,7 @@ O arquivo `qualidade/fixtures/metrics-ataque.json` tem métricas ruins
 - **Se a IA errar, alucinar ou cair:** a resposta só vale se vier no formato `DECISAO: X` com uma opção da lista. Fora disso, o pipeline aplica a opção segura (não promove, faz rollback, reprova). Sem a chave da API, nada chega à produção.
 - **O que não fica só com a IA:** a reprovação por limites objetivos (erro > 5%, p99 > 800 ms) é de uma regra fixa, e a ida para produção exige aprovação humana no environment `producao`. A IA só pode deixar o sistema mais seguro (bloquear ou voltar para a estável), nunca liberar o que a regra fixa barrou.
 - **Tarefa 4:** _preencher depois dos runs_ (ex.: "no pipeline antigo o ataque passou/não passou; com `ia_decisao.sh` a IA percebeu a nota e bloqueou; com a regra fixa o ataque nunca passa").
-- **Limitação conhecida:** as duas versões rodam no mesmo runner do GitHub Actions e o tráfego é simulado pelo `medir.sh`, então as métricas não representam usuários reais. Além disso, o modelo pequeno (`llama-3.1-8b-instant`) pode não perceber a tendência no canary, e a mesma entrada pode ter decisões diferentes em modelos diferentes.
+- **Limitação conhecida:** as duas versões rodam no mesmo runner do GitHub Actions e o tráfego é simulado pelo `medir.sh`, então as métricas não representam usuários reais. Além disso, o modelo usado (definido em `MODELO` nos workflows) pode não perceber a tendência no canary, e a mesma entrada pode ter decisões diferentes em modelos diferentes.
 
 ## Roteiro sugerido para a apresentação
 

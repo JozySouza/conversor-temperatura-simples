@@ -16,6 +16,11 @@ on:
         options: [antigo, ia_decisao, regra_fixa]
         default: antigo
 
+# Modelo da Groq usado pelo scripts/ia_decisao.sh. Para trocar sem editar o arquivo,
+# crie a variável GROQ_MODELO em Settings > Secrets and variables > Actions > Variables
+env:
+  MODELO: ${{ vars.GROQ_MODELO || 'llama-3.3-70b-versatile' }}
+
 jobs:
   gate-metricas:
     runs-on: ubuntu-latest
@@ -37,8 +42,8 @@ jobs:
           PROMPT="Analise as métricas do conversor de temperatura e responda APROVADO ou BLOQUEADO.
           Limites: tempo_resposta_ms <= 300, taxa_erro_pct <= 5, cpu_pct <= 80.
           Métricas: $(cat "$ARQUIVO")"
-          CORPO=$(jq -n --arg p "$PROMPT" \
-            '{model: "llama-3.1-8b-instant", messages: [{role: "user", content: $p}]}')
+          CORPO=$(jq -n --arg p "$PROMPT" --arg m "$MODELO" \
+            '{model: $m, messages: [{role: "user", content: $p}]}')
           RESPOSTA=$(curl -s https://api.groq.com/openai/v1/chat/completions \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer $GROQCLOUD_API_KEY" \
