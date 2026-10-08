@@ -19,7 +19,7 @@ on:
 # Modelo da Groq usado pelo scripts/ia_decisao.sh. Para trocar sem editar o arquivo,
 # crie a variável GROQ_MODELO em Settings > Secrets and variables > Actions > Variables
 env:
-  MODELO: ${{ vars.GROQ_MODELO || 'llama-3.3-70b-versatile' }}
+  MODELO: ${{ vars.GROQ_MODELO || 'openai/gpt-oss-20b' }}
 
 jobs:
   gate-metricas:

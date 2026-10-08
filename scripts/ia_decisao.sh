@@ -18,7 +18,7 @@ set -euo pipefail
 
 : "${TAREFA:?defina TAREFA}" "${ARQUIVO_DADOS:?defina ARQUIVO_DADOS}"
 : "${OPCOES:?defina OPCOES}" "${OPCAO_SEGURA:?defina OPCAO_SEGURA}"
-MODELO="${MODELO:-llama-3.1-8b-instant}"
+MODELO="${MODELO:-openai/gpt-oss-20b}"
 API_URL="${API_URL:-https://api.groq.com/openai/v1/chat/completions}"
 
 # 1) Instruções fixas: opções fechadas, dados tratados como dados, formato fixo
@@ -40,8 +40,9 @@ CORPO=$(jq -n --arg modelo "$MODELO" --arg sistema "$SISTEMA" \
   --arg dados "<dados>
 ${DADOS}
 </dados>" \
-  '{model: $modelo, temperature: 0, max_tokens: 200,
-    messages: [{role: "system", content: $sistema}, {role: "user", content: $dados}]}')
+  '{model: $modelo, temperature: 0, max_tokens: 1024,
+    messages: [{role: "system", content: $sistema}, {role: "user", content: $dados}]}
+   + (if ($modelo | startswith("openai/gpt-oss")) then {reasoning_effort: "low"} else {} end)')
 
 BRUTO=$(curl -s --max-time 30 "$API_URL" \
   -H "Content-Type: application/json" \
