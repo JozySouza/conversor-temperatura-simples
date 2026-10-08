@@ -11,7 +11,19 @@ jobs:
         env:
           GROQCLOUD_API_KEY: ${{ secrets.GROQCLOUD_API_KEY }}
         run: |
-          [ -n "$GROQCLOUD_API_KEY" ] && echo "Secret encontrado" || echo "Secret VAZIO"
+          if [ -z "$GROQCLOUD_API_KEY" ]; then
+            echo "Secret VAZIO"; exit 1
+          fi
+          echo "Secret encontrado. Começa com: ${GROQCLOUD_API_KEY:0:4}... (o certo é gsk_)"
+          RESP=$(curl -s https://api.groq.com/openai/v1/models \
+            -H "Authorization: Bearer $GROQCLOUD_API_KEY")
           echo "----- Modelos disponíveis -----"
-          curl -s https://api.groq.com/openai/v1/models \
-            -H "Authorization: Bearer $GROQCLOUD_API_KEY" | jq -r '.data[].id // .' | sort
+          echo "$RESP" | jq -r 'if (.data | type) == "array" then (if (.data | length) == 0 then "NENHUM modelo liberado" else .data[].id end) else . end' | sort
+          echo "----- Teste com o primeiro modelo da lista -----"
+          M=$(echo "$RESP" | jq -r '.data[0].id // empty' 2>/dev/null)
+          if [ -n "$M" ]; then
+            curl -s https://api.groq.com/openai/v1/chat/completions \
+              -H "Content-Type: application/json" \
+              -H "Authorization: Bearer $GROQCLOUD_API_KEY" \
+              -d "{\"model\":\"$M\",\"messages\":[{\"role\":\"user\",\"content\":\"diga oi\"}]}" | jq -r '.choices[0].message.content // .error.message'
+          fi
