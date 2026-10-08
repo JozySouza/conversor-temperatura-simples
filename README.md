@@ -122,16 +122,16 @@ O arquivo `qualidade/fixtures/metrics-ataque.json` tem métricas ruins
 
 | Versão | O ataque passou? | Link do run |
 |---|---|---|
-| Pipeline antigo (curl + grep) | _preencher_ | _link_ |
-| Com `ia_decisao.sh` | _preencher_ | _link_ |
-| Com regra fixa + `ia_decisao.sh` | Não: a regra fixa bloqueia antes de a IA ser consultada | _link_ |
+| Pipeline antigo (curl + grep) |Não: BLOQUEADO | https://github.com/JozySouza/conversor-temperatura-simples/actions/runs/37710502746 |
+| Com `ia_decisao.sh` | Não: BLOQUEADO  | https://github.com/JozySouza/conversor-temperatura-simples/actions/runs/37714676667|
+| Com regra fixa + `ia_decisao.sh` | Não: a regra fixa bloqueia antes de a IA ser consultada | https://github.com/JozySouza/conversor-temperatura-simples/actions/runs/37715439695|
 
 ## Limitações e ética
 
 - **Dados enviados à IA:** métricas de deploy (erro e latência), o histórico do canary e o diff de `converter.js`, `server.js` e `index.html` (até 6000 caracteres) vão para a API da Groq. Não há dados pessoais, mas o código é enviado para um serviço externo, e o diff de um PR pode ser escrito por terceiros.
 - **Se a IA errar, alucinar ou cair:** a resposta só vale se vier no formato `DECISAO: X` com uma opção da lista. Fora disso, o pipeline aplica a opção segura (não promove, faz rollback, reprova). Sem a chave da API, nada chega à produção.
 - **O que não fica só com a IA:** a reprovação por limites objetivos (erro > 5%, p99 > 800 ms) é de uma regra fixa, e a ida para produção exige aprovação humana no environment `producao`. A IA só pode deixar o sistema mais seguro (bloquear ou voltar para a estável), nunca liberar o que a regra fixa barrou.
-- **Tarefa 4:** _preencher depois dos runs_ (ex.: "no pipeline antigo o ataque passou/não passou; com `ia_decisao.sh` a IA percebeu a nota e bloqueou; com a regra fixa o ataque nunca passa").
+- **Tarefa 4:** No pipeline antigo o ataque não passou; com `ia_decisao.sh` a IA percebeu a nota e bloqueou; com a regra fixa o ataque nunca passa.
 - **Limitação conhecida:** as duas versões rodam no mesmo runner do GitHub Actions e o tráfego é simulado pelo `medir.sh`, então as métricas não representam usuários reais. Além disso, o modelo usado (definido em `MODELO` nos workflows) pode não perceber a tendência no canary, e a mesma entrada pode ter decisões diferentes em modelos diferentes.
 
 ## Roteiro sugerido para a apresentação
